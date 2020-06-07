@@ -66,9 +66,9 @@ const addProduct = async ({ request, response }: { request: any, response: any }
   products.push(product)
 
   response.status = 201
+  response.headers.set('Location', `/api/v1/products/${product.id}`)
   response.body = {
     success: true
-    , data: product
   }
 
 }
@@ -82,12 +82,12 @@ const updateProduct = async ({ params, request, response }: { params: {id: strin
     const body = await request.body
 
     const productUpsert: { name?: string, description?: string, price?: number } = body.value
-    products = products.map(p => p.id === params.id ? { ...p, ...productUpsert } : p)
+    products.map(p => p.id === params.id ? { ...p, ...productUpsert } : p)
 
     response.status = 200
+    response.headers.set('Location', `/api/v1/products/${params.id}`)
     return response.body = {
       success: true
-      , data: products
     }
   }
 
@@ -100,7 +100,7 @@ const updateProduct = async ({ params, request, response }: { params: {id: strin
 
 // @route DELETE /api/v1/products/:id
 
-const deleteProduct = ({ prams, response }: { params: { id: string }, response: any }) => {
+const deleteProduct = ({ params, response }: { params: { id: string }, response: any }) => {
   products = products.filter(p => p.id !== params.id)
 
   response.body = {
